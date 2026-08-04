@@ -1,17 +1,32 @@
 const TelegramBot = require("node-telegram-bot-api");
 
-// Render Environment Variable se token lega
+// BOT_TOKEN Render Environment Variable se aayega
 const token = process.env.BOT_TOKEN;
 
-const bot = new TelegramBot(token, { polling: true });
+const bot = new TelegramBot(token, {
+  polling: true,
+});
 
-bot.onText(/\/start/, async (msg) => {
-  const chatId = msg.chat.id;
-
-  await bot.sendMessage(
-    chatId,
-    "🎉 Welcome!\n\nAapka swagat hai.\nVideo, APK aur baaki message agle step me add karenge."
+// /start command
+bot.onText(/\/start/, (msg) => {
+  bot.sendMessage(
+    msg.chat.id,
+    "👋 Welcome!\n\nBot online hai aur welcome system active hai."
   );
 });
 
-console.log("Bot Started...");
+// New member joined group
+bot.on("new_chat_members", async (msg) => {
+  const chatId = msg.chat.id;
+
+  for (const member of msg.new_chat_members) {
+    const name = member.first_name || "Friend";
+
+    await bot.sendMessage(
+      chatId,
+      `🎉 Welcome ${name}!\n\nGroup me aapka swagat hai.`
+    );
+  }
+});
+
+console.log("✅ Bot Started...");
